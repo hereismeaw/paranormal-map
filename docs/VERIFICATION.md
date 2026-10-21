@@ -12,6 +12,10 @@
 | Docker build / runtime health                    | build สำเร็จ และ `/api/health` ตอบ 200               |
 | Production dependency audit                      | ไม่พบ advisory จาก `npm audit --omit=dev` ณ เวลาตรวจ |
 
+GitHub Actions รันจาก clean runner และผ่านทั้งหมดแล้ว: [CI run](https://github.com/hereismeaw/paranormal-map/actions/runs/39555255133) รวม npm ci, typecheck, lint, MinIO integration, Chromium, production build และ production audit
+
+Bootstrap CLI ถูกทดสอบผ่าน stdin กับฐานข้อมูลทดสอบแยกด้วย ไม่ได้สร้างบัญชีที่มีรหัสเริ่มต้นไว้ในแอปจริง
+
 ## สิ่งที่ทดสอบจริง
 
 - ผู้เยี่ยมชมวางหมุด กรอกชื่อเล่น ส่งเรื่องโดยไม่ล็อกอิน และเปิดลิงก์เรื่องที่เพิ่งเผยแพร่ได้ทันที
