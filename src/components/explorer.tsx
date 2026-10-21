@@ -71,8 +71,15 @@ export function Explorer({
   const items = data?.items || [];
   const visible = selected ? items.find((r) => r.id === selected.id) : null;
   function gps() {
-    navigator.geolocation?.getCurrentPosition(
-      (p) => setPosition({ lat: p.coords.latitude, lng: p.coords.longitude }),
+    if (!navigator.geolocation) {
+      toast.error('อุปกรณ์ไม่รองรับ GPS');
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      (p) => {
+        setSelected(null);
+        setPosition({ lat: p.coords.latitude, lng: p.coords.longitude });
+      },
       () => toast.error('ไม่สามารถใช้ตำแหน่งได้ กรุณาอนุญาต GPS'),
     );
   }
@@ -82,6 +89,7 @@ export function Explorer({
         reports={items}
         onSelect={setSelected}
         heat={heat}
+        center={radar && position ? [position.lng, position.lat] : undefined}
         selected={
           visible ? { latitude: visible.latitude, longitude: visible.longitude } : undefined
         }

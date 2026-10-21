@@ -28,6 +28,8 @@ export function ParanormalMap({
   const [renderedMarkers, setRenderedMarkers] = useState(0);
   const [error, setError] = useState('');
   const refs = useRef({ reports, onSelect, onPick });
+  const focusLongitude = center?.[0];
+  const focusLatitude = center?.[1];
   useEffect(() => {
     refs.current = { reports, onSelect, onPick };
   }, [reports, onSelect, onPick]);
@@ -206,6 +208,10 @@ export function ParanormalMap({
     (map.current.getSource('density') as GeoJSONSource)?.setData(data);
     map.current.setLayoutProperty('heat', 'visibility', heat ? 'visible' : 'none');
   }, [ready, reports, heat]);
+  useEffect(() => {
+    if (!ready || focusLongitude === undefined || focusLatitude === undefined) return;
+    map.current?.easeTo({ center: [focusLongitude, focusLatitude], zoom: 11 });
+  }, [ready, focusLongitude, focusLatitude]);
   useEffect(() => {
     if (!ready || !map.current) return;
     if (!selected) {
