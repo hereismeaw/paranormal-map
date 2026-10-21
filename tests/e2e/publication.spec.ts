@@ -30,6 +30,15 @@ test.beforeEach(async ({ context }, info) => {
       }),
   );
 });
+test('home opens on the full map', async ({ page }) => {
+  await page.goto('/');
+  const map = page.locator('main > .explorer .map-shell');
+  await expect(map).toBeVisible();
+  const box = await page.locator('main > .explorer').boundingBox();
+  expect(box?.y).toBeLessThan(90);
+  expect(box?.height).toBeGreaterThan(400);
+  await expect(map).toHaveAttribute('data-state', 'ready');
+});
 test('guest publishes, map updates, admin deletes and restores, and mobile remains usable', async ({
   page,
   context,

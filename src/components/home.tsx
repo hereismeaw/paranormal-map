@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import { ArrowUpRight, ArrowDown, MapPin, Ghost, Radio, ShieldCheck } from 'lucide-react';
+import { ArrowUpRight, MapPin, Ghost, Radio } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { Explorer } from './explorer';
 import { api, thaiDate } from '@/lib/client';
@@ -25,63 +25,7 @@ export function Home() {
   });
   return (
     <main>
-      <section className="hero">
-        <div className="hero-grid" aria-hidden />
-        <div className="hero-orbit" aria-hidden>
-          <div />
-          <span>13.7563 N / 100.5018 E</span>
-          <Ghost size={86} />
-          <i />
-          <b>บางเรื่อง… ยังอยู่ที่เดิม</b>
-        </div>
-        <div className="hero-copy">
-          <div className="eyebrow">
-            <span className="live-dot" />
-            รวมเรื่องผี จากปากคนเจอ
-          </div>
-          <h1>
-            {en ? (
-              <>
-                Every place
-                <br />
-                has a <em>story.</em>
-              </>
-            ) : (
-              <>
-                ทุกถิ่นที่
-                <br />
-                มี<em>เรื่องผี</em>
-              </>
-            )}
-          </h1>
-          <h2>{en ? 'Some stories never leave…' : 'บางเรื่องราวอาจไม่เคยจากไป…'}</h2>
-          <p>
-            {en
-              ? 'A living map of Thai ghost stories, haunted places, and things we still cannot explain. Add what you found.'
-              : 'ร่วมสำรวจพิกัดผี สถานที่ลี้ลับ และประสบการณ์เหนือธรรมชาติจากผู้คนทั่วประเทศไทย พร้อมแบ่งปันเรื่องราวของคุณลงบนแผนที่'}
-          </p>
-          <div className="actions">
-            <Link className="button" href="/explore">
-              {en ? 'Explore the map' : 'สำรวจแผนที่ผี'}
-              <ArrowUpRight size={18} />
-            </Link>
-            <Link className="button secondary" href="/submit">
-              + {en ? 'Share your encounter' : 'เพิ่มพิกัดที่เจอผี'}
-            </Link>
-          </div>
-          <div className="hero-caption">
-            <ShieldCheck size={15} />
-            ไม่ต้องสมัครสมาชิก · เรื่องเล่าจากผู้คนจริง · เผยแพร่ทันที
-          </div>
-        </div>
-        <div className="hero-bottom">
-          <span>EVERY PLACE HAS A STORY.</span>
-          <a href="#atlas">
-            SCROLL TO EXPLORE <ArrowDown size={13} />
-          </a>
-          <span>EST. 2026 / THAILAND</span>
-        </div>
-      </section>
+      <Explorer />
       <section className="stats-strip">
         {[
           [data?.published, 'เรื่องเล่าบนแผนที่', 'FIELD REPORTS'],
@@ -103,25 +47,10 @@ export function Home() {
           </p>
         </div>
       </section>
-      <section id="atlas" className="section">
-        <div className="section-heading">
-          <div>
-            <div className="eyebrow">01 / EXPLORE THE UNKNOWN</div>
-            <h2>
-              {en ? 'The stories are closer than you think.' : 'เรื่องลี้ลับ อาจอยู่ใกล้กว่าที่คิด'}
-            </h2>
-          </div>
-          <Link href="/explore">
-            สำรวจทั้งหมด
-            <ArrowUpRight size={16} />
-          </Link>
-        </div>
-        <Explorer preview />
-      </section>
       <section className="section recent-section">
         <div className="section-heading">
           <div>
-            <div className="eyebrow">02 / RECENT ENCOUNTERS</div>
+            <div className="eyebrow">01 / RECENT ENCOUNTERS</div>
             <h2>เสียงกระซิบล่าสุด</h2>
           </div>
           <span className="micro">บันทึกจากชุมชน · ยังไม่ได้รับการพิสูจน์</span>
@@ -162,7 +91,7 @@ export function Home() {
       <section className="section categories-section">
         <div className="section-heading">
           <div>
-            <div className="eyebrow">03 / CLASSIFY THE UNEXPLAINED</div>
+            <div className="eyebrow">02 / CLASSIFY THE UNEXPLAINED</div>
             <h2>คุณพบเจออะไรมา?</h2>
           </div>
           <span className="micro">15 CATEGORIES OF THE UNKNOWN</span>
@@ -182,7 +111,7 @@ export function Home() {
       </section>
       <section className="section province-section">
         <div>
-          <div className="eyebrow">04 / STORIES ACROSS THE COUNTRY</div>
+          <div className="eyebrow">03 / STORIES ACROSS THE COUNTRY</div>
           <h2>
             แต่ละจังหวัด
             <br />
