@@ -9,3 +9,5 @@ test-results/
 *.log
 .DS_Store
 public/vendor/
+
+next-env.d.ts

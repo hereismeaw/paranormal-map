@@ -8,3 +8,5 @@ playwright-report
 coverage
 *.log
 public/vendor
+
+next-env.d.ts
