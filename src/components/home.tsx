@@ -32,12 +32,12 @@ export function Home() {
           <span>13.7563 N / 100.5018 E</span>
           <Ghost size={86} />
           <i />
-          <b>UNEXPLAINED, NOT FORGOTTEN.</b>
+          <b>บางเรื่อง… ยังอยู่ที่เดิม</b>
         </div>
         <div className="hero-copy">
           <div className="eyebrow">
             <span className="live-dot" />
-            THE COMMUNITY PARANORMAL ATLAS
+            รวมเรื่องผี จากปากคนเจอ
           </div>
           <h1>
             {en ? (
@@ -48,21 +48,21 @@ export function Home() {
               </>
             ) : (
               <>
-                ทุกสถานที่
+                ทุกถิ่นที่
                 <br />
-                มี<em>เรื่องเล่า</em>
+                มี<em>เรื่องผี</em>
               </>
             )}
           </h1>
           <h2>{en ? 'Some stories never leave…' : 'บางเรื่องราวอาจไม่เคยจากไป…'}</h2>
           <p>
             {en
-              ? 'A living map of strange encounters, local legends, and things we still cannot explain. Add your story to the atlas.'
+              ? 'A living map of Thai ghost stories, haunted places, and things we still cannot explain. Add what you found.'
               : 'ร่วมสำรวจพิกัดผี สถานที่ลี้ลับ และประสบการณ์เหนือธรรมชาติจากผู้คนทั่วประเทศไทย พร้อมแบ่งปันเรื่องราวของคุณลงบนแผนที่'}
           </p>
           <div className="actions">
             <Link className="button" href="/explore">
-              {en ? 'Explore the atlas' : 'สำรวจแผนที่ผี'}
+              {en ? 'Explore the map' : 'สำรวจแผนที่ผี'}
               <ArrowUpRight size={18} />
             </Link>
             <Link className="button secondary" href="/submit">
@@ -99,7 +99,7 @@ export function Home() {
         <div className="stat-last">
           <span className="live-dot" />
           <p>
-            เปิดรับทุกเรื่องเล่า<small>THE ATLAS IS ALWAYS OPEN</small>
+            เปิดรับทุกเรื่องเล่า<small>มีเรื่องหลอน เล่าให้ฟังได้เสมอ</small>
           </p>
         </div>
       </section>
@@ -134,7 +134,7 @@ export function Home() {
                   <span className="archive-index">FIELD NOTE / {r.id.slice(0, 6)}</span>
                   <Ghost size={52} />
                   <span className="micro">
-                    {r.fictional ? 'FICTIONAL DEMO' : 'COMMUNITY REPORT'}
+                    {r.fictional ? 'เรื่องสมมติ' : 'รายงานจากคนเจอ'}
                   </span>
                 </div>
                 <div className="archive-text">

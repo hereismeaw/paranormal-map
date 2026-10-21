@@ -4,6 +4,7 @@ import * as maplibregl from 'maplibre-gl';
 import type { GeoJSONSource } from 'maplibre-gl';
 import type { Point, FeatureCollection } from 'geojson';
 import { categories, type Report } from '@/lib/categories';
+import { inThailandView, thailandMaxBounds } from '@/lib/thailand-bounds';
 import { LocateFixed } from 'lucide-react';
 import { toast } from 'sonner';
 export function ParanormalMap({
@@ -48,6 +49,8 @@ export function ParanormalMap({
         style,
         center: center || [100.5, 13.7],
         zoom: center ? 11 : 5.3,
+        maxBounds: thailandMaxBounds,
+        renderWorldCopies: false,
         attributionControl: { compact: true },
       });
       map.current = m;
@@ -241,6 +244,10 @@ export function ParanormalMap({
     }
     navigator.geolocation.getCurrentPosition(
       (p) => {
+        if (!inThailandView(p.coords.latitude, p.coords.longitude)) {
+          toast.error('ตอนนี้แผนที่รองรับเฉพาะประเทศไทย');
+          return;
+        }
         map.current?.easeTo({ center: [p.coords.longitude, p.coords.latitude], zoom: 12 });
         refs.current.onPick?.(p.coords.latitude, p.coords.longitude);
       },

@@ -17,7 +17,7 @@ export default function Image() {
       }}
     >
       <span style={{ color: '#9DFFB0', fontSize: 22, letterSpacing: 8 }}>
-        THE COMMUNITY PARANORMAL ATLAS
+        แผนที่เรื่องผีจากคนเจอ
       </span>
       <h1 style={{ fontSize: 88, color: '#F1F2F0', lineHeight: 1.05 }}>
         PARANORMAL

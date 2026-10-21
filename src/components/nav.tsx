@@ -12,7 +12,7 @@ export function Nav() {
           <Ghost size={23} />
         </span>
         <span>
-          PARANORMAL<span className="brand-sub">ACTIVITY · THAILAND & BEYOND</span>
+          PARANORMAL<span className="brand-sub">ACTIVITY · THAILAND</span>
         </span>
       </Link>
       <nav aria-label="Main">
@@ -22,7 +22,7 @@ export function Nav() {
         </Link>
         <Link href="/radar">
           <Radar size={15} />
-          {en ? 'Ghost Radar' : 'เรดาร์ลี้ลับ'}
+          {en ? 'Ghost stories nearby' : 'เรื่องผีรอบๆ ตัวคุณ'}
         </Link>
         <button className="locale" onClick={toggle} aria-label="Switch language">
           <Globe size={15} />

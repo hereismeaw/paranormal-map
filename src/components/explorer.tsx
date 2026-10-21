@@ -15,6 +15,7 @@ import {
 import { ParanormalMap } from './map';
 import { categories, categoryLabel, type Report } from '@/lib/categories';
 import { api, thaiDate } from '@/lib/client';
+import { inThailandView } from '@/lib/thailand-bounds';
 import { useUI } from './providers';
 import { toast } from 'sonner';
 export function Explorer({
@@ -77,6 +78,10 @@ export function Explorer({
     }
     navigator.geolocation.getCurrentPosition(
       (p) => {
+        if (!inThailandView(p.coords.latitude, p.coords.longitude)) {
+          toast.error('ตอนนี้รองรับเรื่องผีรอบตัวเฉพาะในประเทศไทย');
+          return;
+        }
         setSelected(null);
         setPosition({ lat: p.coords.latitude, lng: p.coords.longitude });
       },
@@ -123,21 +128,21 @@ export function Explorer({
         <aside className="map-sidebar">
           <div className="eyebrow">
             <span className="live-dot" />
-            {radar ? 'GHOST RADAR' : 'COMMUNITY ATLAS'}
+            {radar ? 'เรื่องผีรอบๆ ตัวคุณ' : 'แผนที่เรื่องผี'}
             <span className="tiny">{en ? 'LIVE' : 'อัปเดตสด'}</span>
           </div>
           <h2>
             {radar
               ? en
                 ? 'Stories around you'
-                : 'เรื่องเล่ารอบตัวคุณ'
+                : 'เรื่องผีรอบๆ ตัวคุณ'
               : en
                 ? 'What lingers here?'
                 : 'ที่นี่… มีอะไรอยู่?'}
           </h2>
           <p className="muted">
             {radar
-              ? 'แสดงรายงานตามระยะทาง ไม่ใช่เครื่องตรวจจับผี'
+              ? 'เรื่องเล่าจากพิกัดใกล้คุณในประเทศไทย'
               : en
                 ? 'Every pin is someone’s story.'
                 : 'ทุกหมุด คือเรื่องเล่าของใครสักคน'}
@@ -149,7 +154,7 @@ export function Explorer({
                 ใช้ตำแหน่งของฉัน
               </button>
               <select
-                aria-label="ระยะเรดาร์"
+                aria-label="ระยะค้นหาเรื่องผี"
                 value={radius}
                 onChange={(e) => setRadius(e.target.value)}
               >
@@ -257,7 +262,7 @@ export function Explorer({
         </aside>
       )}
       <div className="map-coordinates">
-        THAILAND & BEYOND <span>13°42′N 100°30′E</span>
+        THAILAND <span>13°42′N 100°30′E</span>
       </div>
       {heat && (
         <div className="heat-legend">

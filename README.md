@@ -20,12 +20,12 @@
 
 นี่เลยกลายเป็น **Paranormal Activity** ครับ ทำเว็บโทนมืดให้ดูเหมือนโต๊ะทำงานนักสืบ แต่คนเขียนอาจเปิดไฟทุกดวงตอนนั่งทำอยู่
 
-เว็บนี้เก็บ **เรื่องเล่าจากผู้คน** ไม่ได้ยืนยันว่ามีผีจริง และ Ghost Radar ก็แสดงรายงานใกล้ตัวจากฐานข้อมูล ไม่ได้ใช้ Wi-Fi สแกนวิญญาณ ถ้ามันทำได้จริงผมน่าจะเป็นคนแรกที่ถอนการติดตั้ง
+เว็บนี้เก็บ **เรื่องเล่าจากผู้คน** ไม่ได้ยืนยันว่ามีผีจริง และหน้า “เรื่องผีรอบๆ ตัวคุณ” ก็แค่ดึงรายงานใกล้พิกัดจากฐานข้อมูล ไม่ได้ใช้ Wi-Fi สแกนวิญญาณ ถ้ามันทำได้จริงผมน่าจะเป็นคนแรกที่ถอนการติดตั้ง
 
 ## แอปทำอะไรได้
 
-- เปิดแผนที่ทั่วโลก เริ่มต้นที่ประเทศไทย มีหมุด SVG แยก 15 ประเภท รวมกลุ่มเมื่อซูมออก และดูความหนาแน่นของรายงานได้
-- ส่งเรื่องแบบผู้เยี่ยมชม เลือกพิกัดด้วยแผนที่ ลากหมุด กรอก GPS หรือขอใช้ตำแหน่งปัจจุบัน ไม่มีหน้าสมัครบัญชีคั่น
+- เปิดแผนที่ประเทศไทย มีหมุด SVG แยก 15 ประเภท รวมกลุ่มเมื่อซูมออก และดูความหนาแน่นของรายงานได้
+- ส่งเรื่องแบบผู้เยี่ยมชม เลือกพิกัดในไทยด้วยแผนที่ ลากหมุด กรอก GPS หรือขอใช้ตำแหน่งปัจจุบัน ระบบเติมจังหวัดและอำเภอ/เขตให้อัตโนมัติแล้วยังแก้ได้ ไม่มีหน้าสมัครบัญชีคั่น
 - ใส่ชื่อเล่นได้ทั้งไทยและอังกฤษ หรือเว้นว่างเป็น “ผู้พบเห็นนิรนาม” จำชื่อในเครื่องได้ และล้างออกได้
 - เผยแพร่ข้อความทันทีเมื่อผ่าน validation, Turnstile และระบบป้องกันสแปม จากนั้นจึงแนบหลักฐานเพิ่มเติมได้
 - ค้นหาจากชื่อเรื่อง เนื้อหา ชื่อเล่น จังหวัด อำเภอ ประเภท วันที่ และระยะทาง พร้อมแบ่งหน้า
@@ -77,6 +77,8 @@ Public API, search, detail, stats และการอ่านไฟล์ต�
 TypeScript 6 และ ESLint 9 ถูกเลือกให้เข้ากับ peer dependencies ของชุด Next/ESLint ที่ใช้ใน lockfile แทนการฝืนติดตั้ง compiler/linter รุ่นที่ plugin ยังไม่รองรับ
 
 แผนที่เริ่มต้นใช้ style ที่เขียนเองใน `public/map-style.json` กับ [OpenFreeMap](https://openfreemap.org/quick_start/) คง attribution ของ OpenStreetMap/OpenMapTiles ไว้ ไม่ดึง tile จากเซิร์ฟเวอร์สาธารณะ `tile.openstreetmap.org` โดยตรง เปลี่ยนเป็นผู้ให้บริการที่คุณมีสิทธิ์ใช้ได้ด้วย `NEXT_PUBLIC_MAP_STYLE_URL` และแก้ CSP ให้ตรงโดเมนด้วย
+
+ขอบเขตประเทศใช้ [geoBoundaries](https://www.geoboundaries.org/) THA ADM0 แบบ simplified (CC BY 4.0) เพื่อจำกัดการปักหมุดให้อยู่ในไทย การเติมจังหวัดและอำเภอใช้ [Nominatim](https://operations.osmfoundation.org/policies/nominatim/) ของ OpenStreetMap ส่งแค่พิกัดที่ปัดแล้ว ไม่ส่งชื่อหรือคุกกี้ผู้เยี่ยมชม
 
 ## เริ่มด้วย Docker
 
@@ -289,7 +291,8 @@ docker compose run --rm -T migrate npm run retention:purge
 ```text
 src/app/                     pages, metadata, public/admin Route Handlers
 src/components/              map, explorer, submission, report detail, admin
-src/lib/                     validation, security, auth, media, spatial queries
+src/lib/                     validation, security, auth, media, spatial queries, Thai geocoding
+src/data/                    simplified Thailand boundary used to keep pins inside the country
 db/migrations/              PostgreSQL/PostGIS schema, constraints, indexes
 scripts/                     migrate, fictional seed, bootstrap, media worker, purge
 tests/                      unit, database integration, browser workflow
@@ -301,7 +304,7 @@ docs/IMPLEMENTATION.md       implementation details, assumptions and limits
 
 ## ขอบเขตที่ยังมีอยู่
 
-- ค้นหาสถานที่จากคลังเรื่องเล่าของชุมชนได้ แต่ยังไม่มี external address geocoder ถ้าพิกัดยังไม่เคยมีในระบบ ให้เลือกบนแผนที่ กรอกพิกัด หรือใช้ GPS
+- ตอนนี้รับเรื่องเล่าเฉพาะพิกัดในประเทศไทย เมื่อเลือกหมุด ระบบถาม OpenStreetMap Nominatim ด้วยพิกัดที่ปัดแล้วเพื่อเติมจังหวัดและอำเภอ/เขต ถ้าผู้ให้บริการไม่ตอบ ยังกรอกเองได้
 - ภาษาอังกฤษยังไม่ครบทุกข้อความ โดยเฉพาะหน้าแบบฟอร์มและหลังบ้าน
 - เสียง/วิดีโอตรวจ malware และ signature แต่ไม่ได้ transcode หรือล้าง metadata ภายในทุก container format ควรตรวจไฟล์ส่วนตัวก่อนส่ง
 - การส่งวิดีโอผ่าน proxy ยังไม่มี byte-range optimization เหมาะกับไฟล์ขนาดไม่เกินเพดาน 20 MB

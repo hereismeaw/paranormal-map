@@ -6,8 +6,8 @@
 | ------------------------------------------------ | ---------------------------------------------------- |
 | TypeScript strict (`npm run typecheck`)          | ผ่าน                                                 |
 | ESLint (`npm run lint`)                          | ผ่าน                                                 |
-| Unit + integration (`npm run test:integration`)  | ผ่าน 17 เคส                                          |
-| Chromium (`LIVE_MAP_TEST=true npm run test:e2e`) | ผ่าน 2 สถานการณ์                                     |
+| Unit + integration (`npm run test:integration`)  | ผ่าน 24 เคส                                          |
+| Chromium (`npm run test:e2e`)                    | ผ่าน workflow หลัก (smoke แผนที่จริงยังเป็น opt-in)  |
 | Production build (`npm run build`)               | ผ่าน                                                 |
 | Docker build / runtime health                    | build สำเร็จ และ `/api/health` ตอบ 200               |
 | Production dependency audit                      | ไม่พบ advisory จาก `npm audit --omit=dev` ณ เวลาตรวจ |
@@ -32,12 +32,13 @@ Bootstrap CLI ถูกทดสอบผ่าน stdin กับฐานข�
 - ตรวจ map worker ที่ให้บริการจากแอปเอง และตรวจจำนวน symbol/cluster ที่ MapLibre render จริง
 - smoke test แยกเรียก OpenFreeMap จริง พร้อม 20 เรื่องสมมติที่ติดป้ายชัดเจน
 - viewport มือถือ 390 × 844 ไม่มี horizontal overflow และชื่อเล่นที่จำไว้ล้างได้
+- พิกัดนอกประเทศไทยถูกปฏิเสธตอนส่งเรื่อง จังหวัด/อำเภอถูกเติมจาก geocoder ที่ mock ไว้ และหน้าเรื่องผีรอบตัวใช้พิกัดในกรุงเทพฯ
 
 ## ขอบเขตของผลตรวจ
 
-Integration tests mock **เฉพาะคำตอบ HTTP ของ Cloudflare Siteverify** เพื่อทดสอบกรณีปฏิเสธต่าง ๆ อย่างทำซ้ำได้ ฐานข้อมูล, PostGIS, rate limiter และ image storage ไม่ได้ mock
+Integration tests mock **คำตอบ HTTP ของ Cloudflare Siteverify** และ **Nominatim เฉพาะเคส geocode** เพื่อให้ทำซ้ำได้ ฐานข้อมูล, PostGIS, rate limiter, image storage และการตรวจขอบเขตประเทศไทยจากไฟล์ geoBoundaries ไม่ได้ mock
 
-Browser workflow ใช้ fixture ของ Turnstile widget และพื้นแผนที่ แต่ server ยังเรียก Siteverify ของ Cloudflare จริงด้วย official development key ส่วน smoke test แผนที่จริงไม่ใช้ tile fixture และเปิดด้วย `LIVE_MAP_TEST=true` เท่านั้น เพื่อลดความล้มเหลวของ CI จากผู้ให้บริการภายนอก
+Browser workflow ใช้ fixture ของ Turnstile widget, พื้นแผนที่ และ `/api/geocode` แต่ server ยังเรียก Siteverify ของ Cloudflare จริงด้วย official development key ส่วน smoke test แผนที่จริงไม่ใช้ tile fixture และเปิดด้วย `LIVE_MAP_TEST=true` เท่านั้น เพื่อลดความล้มเหลวของ CI จากผู้ให้บริการภายนอก
 
 ยังไม่ได้ทำ load test, penetration test หรือทดสอบ Cloudflare Tunnel กับโดเมน production ของผู้ใช้ ไม่ได้ทดสอบ ClamAV ด้วย signature database จริงในรอบนี้ ไฟล์เสียง/วิดีโอต้องมี scanner ที่ตอบผลสำเร็จจึงจะเปิดเผยได้ หาก scanner/storage ล่ม worker จะเก็บไฟล์ private ไว้รอลองใหม่
 

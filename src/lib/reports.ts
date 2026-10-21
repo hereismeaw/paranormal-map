@@ -1,3 +1,4 @@
+import { isInThailand } from './thailand';
 import { randomUUID } from 'node:crypto';
 import { sql } from './db';
 import { ApiError } from './http';
@@ -7,6 +8,8 @@ import type { Report } from './categories';
 import { z } from 'zod';
 export async function submitReport(request: Request, raw: unknown) {
   const input = reportInput.parse(raw);
+  if (!isInThailand(input.latitude, input.longitude))
+    throw new ApiError(400, 'ตอนนี้รับเรื่องเล่าเฉพาะพิกัดในประเทศไทย');
   const visitor = guest(request);
   if (visitor.fresh) throw new ApiError(400, 'กรุณาเปิดแบบฟอร์มใหม่เพื่อเริ่มเซสชัน');
   const reference = digest(visitor.id);

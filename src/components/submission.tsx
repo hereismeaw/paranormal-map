@@ -124,6 +124,7 @@ export function Submission() {
   });
   const latitude = useWatch({ control, name: 'latitude' });
   const longitude = useWatch({ control, name: 'longitude' });
+  const [addressStatus, setAddressStatus] = useState('');
   const [chosen, setChosen] = useState(false);
   const [token, setToken] = useState('');
   const [reset, setReset] = useState(0);
@@ -179,6 +180,35 @@ export function Submission() {
       clearTimeout(t);
     };
   }, [latitude, longitude, chosen]);
+  useEffect(() => {
+    if (!chosen || !Number.isFinite(latitude) || !Number.isFinite(longitude)) return;
+    let active = true;
+    const timer = setTimeout(async () => {
+      setValue('province', '');
+      setValue('district', '');
+      setAddressStatus('กำลังค้นหาจังหวัดและอำเภอ…');
+      try {
+        const address = await api<{ province: string; district: string }>(
+          'geocode?' + new URLSearchParams({ lat: String(latitude), lng: String(longitude) }),
+        );
+        if (!active) return;
+        setValue('province', address.province);
+        setValue('district', address.district);
+        setAddressStatus(
+          address.province && address.district
+            ? 'เติมที่อยู่แล้ว ตรวจสอบและแก้ไขได้'
+            : 'พบข้อมูลบางส่วน กรุณาเติมจังหวัดหรืออำเภอที่ขาด',
+        );
+      } catch (error) {
+        if (active)
+          setAddressStatus(error instanceof Error ? error.message : 'กรุณากรอกจังหวัดและอำเภอเอง');
+      }
+    }, 800);
+    return () => {
+      active = false;
+      clearTimeout(timer);
+    };
+  }, [latitude, longitude, chosen, setValue]);
   function pick(lat: number, lng: number) {
     setValue('latitude', Number(lat.toFixed(6)));
     setValue('longitude', Number(lng.toFixed(6)));
@@ -329,14 +359,24 @@ export function Submission() {
               />
             </label>
             <label>
-              จังหวัด / รัฐ
+              จังหวัด
               <input maxLength={100} {...register('province')} />
             </label>
             <label>
-              อำเภอ / เมือง
+              อำเภอ / เขต
               <input maxLength={100} {...register('district')} />
             </label>
           </div>
+          <p className="micro" role="status">
+            {addressStatus}
+          </p>
+          <p className="micro">
+            ค้นหาที่อยู่ด้วย{' '}
+            <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">
+              © OpenStreetMap contributors
+            </a>{' '}
+            โดยส่งพิกัดโดยประมาณ · รองรับประเทศไทย
+          </p>
           <label className="checkbox">
             <input type="checkbox" {...register('sensitive')} />
             เป็นบ้านพักหรือสถานที่อ่อนไหว — แสดงพิกัดโดยประมาณ

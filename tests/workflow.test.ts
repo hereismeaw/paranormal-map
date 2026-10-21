@@ -194,12 +194,36 @@ describe.skipIf(!run)('real PostgreSQL/PostGIS + Valkey publication workflow', (
       [{ website: 'spam' }, 422],
       [{ description: '<script>alert(1)</script>' + '.'.repeat(50) }, 422],
       [{ latitude: 100 }, 400],
+      [{ latitude: 40.7128, longitude: -74.006 }, 400],
     ] as const)
       expect((await POST(req('reports', story(extra)))).status).toBe(status);
     const [count] = await sql()`SELECT count(*)::integer AS n FROM paranormal_reports`;
     expect(count.n).toBe(0);
     const [spam] = await sql()`SELECT count(*)::integer AS n FROM spam_events`;
     expect(spam.n).toBe(2);
+  });
+  it('fills Thai province and district from the geocoder and refuses points outside the country', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (input: RequestInfo | URL) => {
+        const url = String(input);
+        if (url.startsWith('https://nominatim.openstreetmap.org/reverse')) {
+          return Response.json({
+            address: {
+              country_code: 'th',
+              state: 'จังหวัดกรุงเทพมหานคร',
+              city_district: 'เขตคลองเตย',
+            },
+          });
+        }
+        return realFetch(input);
+      }),
+    );
+    expect((await GET(req('geocode'))).status).toBe(400);
+    expect((await GET(req('geocode?lat=40.71&lng=-74'))).status).toBe(400);
+    const found = await GET(req('geocode?lat=13.726&lng=100.570'));
+    expect(found.status).toBe(200);
+    expect(await found.json()).toEqual({ province: 'กรุงเทพมหานคร', district: 'คลองเตย' });
   });
   it('enforces atomic shared limits under concurrent requests and returns Retry-After', async () => {
     const outcomes = await Promise.allSettled(

@@ -1,3 +1,4 @@
+import { reverseAddress } from '@/lib/geocoding';
 import { randomUUID } from 'node:crypto';
 import { handle, json, body, sameOrigin, ApiError } from '@/lib/http';
 import {
@@ -30,6 +31,13 @@ async function route(request: Request) {
       if (method === 'POST')
         await limits([{ key: `auth:${digest(clientIP(request))}`, max: 10, seconds: 900 }]);
       return auth().handler(request);
+    }
+    if (path === 'geocode' && method === 'GET') {
+      const lat = Number(url.searchParams.get('lat'));
+      const lng = Number(url.searchParams.get('lng'));
+      if (!Number.isFinite(lat) || !Number.isFinite(lng)) throw new ApiError(400, 'กรุณาระบุพิกัด');
+      await limits([{ key: `geocode:${digest(clientIP(request))}`, max: 60, seconds: 60 }]);
+      return json(await reverseAddress(lat, lng));
     }
     if (path === 'guest' && method === 'GET') {
       const g = guest(request);

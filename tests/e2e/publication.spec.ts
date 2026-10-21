@@ -22,6 +22,13 @@ test.beforeEach(async ({ context }, info) => {
       },
     }),
   );
+  await context.route(
+    (url) => url.pathname === '/api/geocode',
+    (route) =>
+      route.fulfill({
+        json: { province: 'กรุงเทพมหานคร', district: 'วัฒนา' },
+      }),
+  );
 });
 test('guest publishes, map updates, admin deletes and restores, and mobile remains usable', async ({
   page,
@@ -130,20 +137,21 @@ test('guest publishes, map updates, admin deletes and restores, and mobile remai
     true,
   );
   await context.grantPermissions(['geolocation']);
-  await context.setGeolocation({ latitude: 40.7128, longitude: -74.006 });
+  await context.setGeolocation({ latitude: 13.7563, longitude: 100.5018 });
   await page.goto('/radar');
+  await expect(page.getByRole('heading', { name: 'เรื่องผีรอบๆ ตัวคุณ' })).toBeVisible();
   const nearby = page.waitForRequest((request) => {
     const url = new URL(request.url());
     return (
       url.pathname === '/api/locations' &&
-      url.searchParams.get('lat') === '40.7128' &&
-      url.searchParams.get('lng') === '-74.006'
+      url.searchParams.get('lat') === '13.7563' &&
+      url.searchParams.get('lng') === '100.5018'
     );
   });
   await page.getByRole('button', { name: 'ใช้ตำแหน่งของฉัน' }).click();
   await nearby;
   await expect(page.locator('.map-shell')).toHaveAttribute('data-state', 'ready');
-  await expect(page.locator('.report-card')).toHaveCount(0);
+  await expect(page.getByRole('heading', { name: title, exact: true })).toBeVisible();
   await page.goto('/submit');
   await expect(page.getByPlaceholder('เช่น GhostHunter99, Meaw หรือ นักล่าผี')).toHaveValue(
     'Meaw จากบราวเซอร์',
